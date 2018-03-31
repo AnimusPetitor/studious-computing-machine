@@ -420,7 +420,9 @@ public class TelegraphSelectActivity extends BaseFragment {
                                }
                            });
                            presentFragment(fragment1);*/
-                        if(flag==1)delegate.startTelegraphEditActivity(item);else {
+                          if(!item.subtitle.startsWith("http")) return;
+                        if(flag!=0)delegate.startTelegraphEditActivity(item);
+                        else {
                             ArrayList<String> s = new ArrayList();
                             s.add(item.subtitle);
                             delegate.didSelectFiles(TelegraphSelectActivity.this, s);

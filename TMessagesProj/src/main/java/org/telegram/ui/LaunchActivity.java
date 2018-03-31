@@ -568,6 +568,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                                 }
                               fname = item.file.getName();
                             }
+
                             final TelegraphEditor fragment1 = new TelegraphEditor(LaunchActivity.this,list, item.title,fname!=null && fname.endsWith(".pub"));
 
                             fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
