@@ -4615,7 +4615,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         fname = item.file.getName();
                     }
-                    final TelegraphEditor fragment1 = new TelegraphEditor(getParentActivity(),list, item.title,fname.endsWith(".pub"));
+                    final TelegraphEditor fragment1 = new TelegraphEditor(getParentActivity(),list, item.title,fname!=null && fname.endsWith(".pub"));
                     fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
                         @Override
                         public void commitCurrentToRecents(TelegraphEditor activity, String title, final List<Node> body, boolean draft)  {

@@ -97,8 +97,6 @@ import java.util.StringTokenizer;
 
 public class TelegraphSelectActivity extends BaseFragment {
 
-
-
     public interface TelegraphSelectActivityDelegate {
         void didSelectFiles(TelegraphSelectActivity activity, ArrayList<String> files);
         void startTelegraphEditActivity(ListItem item);
@@ -265,7 +263,7 @@ public class TelegraphSelectActivity extends BaseFragment {
         selectedMessagesCountTextView.setTextColor(Theme.usePlusTheme ? Theme.chatHeaderIconsColor : Theme.getColor(Theme.key_actionBarActionModeDefaultIcon));
 
 
-        actionMode.addView(selectedMessagesCountTextView, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1.0f, 65, 0, 0, 0));
+        if(flag!=2)actionMode.addView(selectedMessagesCountTextView, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1.0f, 65, 0, 0, 0));
 
         actionModeViews.add(actionMode.addItemWithWidth(done, R.drawable.ic_ab_done, AndroidUtilities.dp(54)));
 
@@ -347,7 +345,7 @@ public class TelegraphSelectActivity extends BaseFragment {
                 File file = item.file;
                 if (file == null) {
                         if (delegate != null) {
-                            if(flag==1) {
+                            if(flag!=0) {
                                 ArrayList<String> s = new ArrayList();
                                 s.add(item.subtitle);
                                 delegate.didSelectFiles(TelegraphSelectActivity.this, s);
@@ -422,7 +420,7 @@ public class TelegraphSelectActivity extends BaseFragment {
                                }
                            });
                            presentFragment(fragment1);*/
-                        if(flag==1)delegate.startTelegraphEditActivity(item);else{
+                        if(flag==1)delegate.startTelegraphEditActivity(item);else {
                             ArrayList<String> s = new ArrayList();
                             s.add(item.subtitle);
                             delegate.didSelectFiles(TelegraphSelectActivity.this, s);

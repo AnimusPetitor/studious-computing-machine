@@ -525,7 +525,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                         LaunchActivity.this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                         return;
                     }
-                    final TelegraphSelectActivity fragment = new TelegraphSelectActivity(1);
+                    final TelegraphSelectActivity fragment = new TelegraphSelectActivity(2);
                     fragment.setDelegate(new TelegraphSelectActivity.TelegraphSelectActivityDelegate() {
                         @Override
                         public void didSelectFiles(TelegraphSelectActivity activity, ArrayList<String> files) {
@@ -535,9 +535,12 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                             //DraftQuery.cleanDraft(dialog_id, tr
 
                             if(files.get(0)!=null) {
-                            ArticleViewer.getInstance().setParentActivity(LaunchActivity.this, fragment);
-                            ArticleViewer.getInstance().openUrl(files.get(0),true);
+                                Log.d("GOT",files.get(0));
+                                //ArticleViewer.getInstance().setParentActivity(LaunchActivity.this, fragment);
+                                //ArticleViewer.getInstance().openUrl(files.get(0),true);
+                                Browser.openUrl(LaunchActivity.this,files.get(0));
                             }
+
                         }
                         @Override
                         public void startTelegraphEditActivity(TelegraphSelectActivity.ListItem item) {
@@ -565,7 +568,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                                 }
                               fname = item.file.getName();
                             }
-                            final TelegraphEditor fragment1 = new TelegraphEditor(LaunchActivity.this,list, item.title,fname.endsWith(".pub"));
+                            final TelegraphEditor fragment1 = new TelegraphEditor(LaunchActivity.this,list, item.title,fname!=null && fname.endsWith(".pub"));
 
                             fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
                                 @Override
