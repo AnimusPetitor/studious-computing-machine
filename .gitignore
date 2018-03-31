@@ -1,0 +1,14 @@
+.gradle/
+captures/
+build/
+gradle/
+metadata/
+tools/
+.idea/
+TMessagesProj/build/
+TMessagesProj/config/
+TMessagesProj/libs/
+TMessagesProj/test/
+TMessagesProj/google-services.json
+TMessagesProj/src/androidTest
+java_pid9587.hprof

@@ -1,0 +1,262 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    maven { url "https://maven.google.com" }
+    google()
+    jcenter()
+}
+
+configurations {
+    compile.exclude module: 'support-v4'
+}
+
+dependencies {
+
+    /*androidTestImplementation 'com.android.support:support-annotations:25.3.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'junit:junit:4.12'
+    // Optional -- Hamcrest library
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    // Optional -- UI testing with Espresso
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    // Optional -- UI testing with UI Automator
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+    androidTestImplementation('tools.fastlane:screengrab:1.1.0')*/
+
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.2');
+
+    implementation 'com.google.android.gms:play-services-gcm:11.8.0'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    implementation 'com.google.android.gms:play-services-vision:11.8.0'
+    implementation 'com.google.android.gms:play-services-wallet:11.8.0'
+    implementation 'com.google.android.gms:play-services-wearable:11.8.0'
+
+    implementation 'com.android.support:support-core-ui:25.4.0'
+    implementation 'com.android.support:support-compat:25.4.0'
+    implementation 'com.android.support:support-core-utils:25.4.0'
+    implementation 'com.android.support:support-v13:25.4.0'
+    implementation 'com.android.support:palette-v7:25.4.0'
+    implementation 'net.hockeyapp.android:HockeySDK:4.1.3'
+    implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
+    implementation 'com.stripe:stripe-android:2.0.2'
+    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation 'ru.noties:markwon:1.0.3'
+    //implementation 'ru.noties:markwon-image-loader:1.0.3' // optional
+
+    compile 'com.android.volley:volley:1.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.6.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.6.0'
+
+    //compile 'com.google.inject:guice:4.0'
+    //debugimplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+
+}
+
+android {
+
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+    useLibrary 'org.apache.http.legacy'
+    //defaultConfig.applicationId = "org.telegram.messenger"
+    defaultConfig.applicationId = "org.telegram.telangram.languages"
+    //sourceSets.main.jniLibs.srcDirs = ['./jni/']
+
+    /*externalNativeBuild {
+        ndkBuild {
+            path "jni/Android.mk"
+        }
+    }*/
+    defaultConfig {
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+
+sourceSets.main {
+        jniLibs.srcDir 'libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
+    dexOptions {
+        jumboMode = true
+        javaMaxHeapSize  "4g"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    signingConfigs {
+        debug {
+            //storeFile file("config/release.keystore.jks")
+            //storeFile file("config/release.keystore")
+            //storePassword "1h111trekk1"
+            //keyAlias "key0"
+            //keyPassword "1h111trekk1"
+            v2SigningEnabled false
+        }
+        release {
+            //storeFile file("config/release.keystore.jks")
+            //storePassword "1h111trekk1"
+            //keyAlias "key0"
+            //keyPassword "1h111trekk1"
+            v2SigningEnabled false
+            keyAlias 'key0'
+            keyPassword '1h111trekk1'
+            storeFile file('/home/elanimus/Desktop/plus-messenger-master-1d96151861d0db96ffe384807621a0a3a2d371c8/TMessagesProj/config/release.keystore.jks')
+            storePassword '1h111trekk1'
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".beta"
+        }
+
+        release {
+            debuggable false
+            jniDebuggable false
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        //foss {
+        //debuggable false
+        //jniDebuggable false
+        //signingConfig signingConfigs.release
+        //}
+    }
+
+    defaultConfig.versionCode = 1
+
+    defaultConfig.manifestPlaceholders = [HOCKEYAPP_APP_ID: "0bf574d05ea448cea56617c5fcb9a6b3"]
+
+    sourceSets.debug {
+        manifest.srcFile 'config/debug/AndroidManifest.xml'
+    }
+
+    sourceSets.release {
+        manifest.srcFile 'config/release/AndroidManifest.xml'
+    }
+    defaultConfig.multiDexEnabled true
+
+    //sourceSets.foss {
+    //    manifest.srcFile 'config/foss/AndroidManifest.xml'
+    //}
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    flavorDimensions "flavor"
+
+    productFlavors {
+        x86 {
+            dimension "flavor"
+            ndk {
+                abiFilter "x86"
+            }
+            versionCode = 11
+            applicationId 'org.telegram.telangram.languages'
+        }
+
+        armv7 {
+            dimension "flavor"
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            versionCode = 17
+            applicationId 'org.telegram.telangram.languages'
+        }
+        x86_SDK23 {
+            dimension "flavor"
+            ndk {
+                abiFilter "x86"
+            }
+            sourceSets.debug {
+                manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
+            }
+            sourceSets.release {
+                manifest.srcFile 'config/release/AndroidManifest_SDK23.xml'
+            }
+            minSdkVersion 23
+            versionCode = 11
+            applicationId 'org.telegram.telangram.languages'
+        }
+        armv7_SDK23 {
+            dimension "flavor"
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            sourceSets.debug {
+                manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
+            }
+            sourceSets.release {
+                manifest.srcFile 'config/release/AndroidManifest_SDK23.xml'
+            }
+            minSdkVersion 23
+            versionCode = 18
+            applicationId 'org.telegram.telangram.languages'
+        }
+       // fat {
+         //   dimension "flavor"
+           // sourceSets.debug {
+             //   manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
+            //}
+            //sourceSets.release {
+              //  manifest.srcFile 'config/release/AndroidManifest_SDK23.xml'
+            //}
+            //versionCode = 0
+            //applicationId 'org.telegram.telangram.languages'
+        //}
+    }
+
+    applicationVariants.all { variant ->
+        def abiVersion = variant.productFlavors.get(0).versionCode
+        variant.mergedFlavor.versionCode = defaultConfig.versionCode * 10 + abiVersion
+    }
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionName "2"
+        /* externalNativeBuild {
+             ndkBuild {
+                 arguments "NDK_APPLICATION_MK:=jni/Application.mk", "APP_PLATFORM:=android-14"
+                 abiFilters "armeabi-v7a", "x86"
+                 path "jni/Android.mk"
+             }
+         }*/
+        applicationId 'org.telegram.telangram.languages'
+    }
+
+
+}
+
+apply plugin: 'com.google.gms.google-services'

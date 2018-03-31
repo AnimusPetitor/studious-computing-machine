@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:scrollbars="none"
+    android:layout_width="200dp"
+    android:elevation="10dp"
+    android:padding="3dp"
+    android:background="@color/common_google_signin_btn_text_dark_disabled1"
+    android:layout_height="31.0dip">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_width="28dp"
+            android:id="@+id/bold"
+            android:background="@drawable/bold"
+            android:layout_marginRight="15dp"
+            android:layout_height="28dp" >
+        </ImageButton>
+        <ImageButton
+            android:background="@drawable/italic"
+            android:layout_width="27dp"
+            android:id="@+id/italic"
+            android:layout_marginRight="15dp"
+            android:layout_height="27dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/quote"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/quotes"
+            android:layout_width="27dp"
+            android:layout_height="27dp"/>
+        <ImageButton
+            android:id="@+id/size1"
+            android:background="@drawable/h1"
+            android:layout_width="27dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="27dp">
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/size2"
+            android:background="@drawable/h2"
+            android:layout_width="27dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="27dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/underline"
+            android:background="@drawable/under"
+            android:layout_width="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="20dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/strike"
+            android:background="@drawable/strike"
+            android:layout_width="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="20dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/horiz"
+            android:background="@drawable/ic_more_horiz_black_24dp"
+            android:layout_width="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="20dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/link"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/anchor"
+            android:layout_width="27dp"
+            android:layout_height="27dp" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/image"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/format_12"
+            android:layout_width="27dp"
+            android:layout_height="27dp">
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/video"
+            android:background="@drawable/format_13"
+            android:layout_width="27dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="27dp" >
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/clear"
+            android:background="@drawable/ic_format_clear_black_24dp"
+            android:layout_width="22dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="22dp">
+        </ImageButton>
+    </LinearLayout>
+</HorizontalScrollView>
+
