@@ -551,9 +551,11 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                                              return;
                                          }
                                          try {
+                                             Page p = new Page();
+                                             p.setContent(body);
                                              FileOutputStream fi = new FileOutputStream(Environment.getExternalStorageDirectory() + "Telegram/Telegraph/" + title + ".-_-." + "" + ".tgp");
                                              ObjectOutputStream oo = new ObjectOutputStream(fi);
-                                             oo.writeObject(body);
+                                             oo.writeObject(p);
                                              //AndroidUtilities.copyFile(new ByteArrayInputStream(body.toString().getBytes()), new File(Environment.getExternalStorageDirectory(), "Telegram/Telegraph/"+title+".-_-."+(body.length()>100?body.subSequence(0,100):body)+".tgp"));
                                          } catch (IOException s) {
 
@@ -577,7 +579,6 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                              if(!draft && title.length() > 0){
 
                              }
-
                             else {
                                  if (Build.VERSION.SDK_INT >= 23 && LaunchActivity.this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                      LaunchActivity.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
@@ -585,9 +586,11 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                                      return;
                                  }
                                  try {
+                                     Page p = new Page();
+                                     p.setContent(body);
                                      FileOutputStream fi = new FileOutputStream(Environment.getExternalStorageDirectory() + "Telegram/Telegraph/" + title + ".-_-." + "" + ".tgp");
                                      ObjectOutputStream oo = new ObjectOutputStream(fi);
-                                     oo.writeObject(body);
+                                     oo.writeObject(p);
                                      //AndroidUtilities.copyFile(new ByteArrayInputStream(body.toString().getBytes()), new File(Environment.getExternalStorageDirectory(), "Telegram/Telegraph/"+title+".-_-."+(body.length()>100?body.subSequence(0,100):body)+".tgp"));
                                  } catch (IOException s) {
                                  }

@@ -79,7 +79,7 @@ public class Page implements TelegraphObject {
     public Boolean getCanEdit() {
         return canEdit;
     }
-
+    public void setContent(List<Node> c) {content = c;}
     @Override
     public String toString() {
         return "Page{" +

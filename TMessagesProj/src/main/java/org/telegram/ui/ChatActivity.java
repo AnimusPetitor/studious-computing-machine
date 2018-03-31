@@ -4601,9 +4601,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                  }
                                  try {
                                      //+ ".-_-."
+                                     Page p = new Page();
+                                     p.setContent(body);
                                      FileOutputStream fi = new FileOutputStream(Environment.getExternalStorageDirectory() + "/Telegram/Telegraph/" + title + "" + ".tgp");
                                      ObjectOutputStream oo = new ObjectOutputStream(fi);
-                                     oo.writeObject(body);
+                                     oo.writeObject(p);
                                      //AndroidUtilities.copyFile(new ByteArrayInputStream(body.toString().getBytes()), new File(Environment.getExternalStorageDirectory(), "Telegram/Telegraph/"+title+".-_-."+(body.length()>100?body.subSequence(0,100):body)+".tgp"));
                                  } catch (IOException s) {
 

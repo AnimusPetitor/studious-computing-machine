@@ -331,6 +331,7 @@ public class TelegraphSelectActivity extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
                 ListItem item = listAdapter.getItem(position);
+
                 if (item == null) {
                     return;
                 }
@@ -340,6 +341,7 @@ public class TelegraphSelectActivity extends BaseFragment {
                             delegate.startTelegraphEditActivity();
                         }
                 } else if (file.isDirectory()) {
+                    Log.d("D",(item==null) + "");
                     if (item.icon == R.drawable.ic_create_black_24dp) {
                         if (delegate != null) {
 
@@ -370,12 +372,10 @@ public class TelegraphSelectActivity extends BaseFragment {
                        try {
                            //backgroun
                            //String fname = item.file.getName();
-                           FileInputStream fi = new FileInputStream(item.thumb);
+                           /*FileInputStream fi = new FileInputStream(item.thumb);
                            ObjectInputStream oo = new ObjectInputStream(fi );
                            final Page list = (Page) oo.readObject();
-
                            String fname = item.file.getName();
-
 
                            final TelegraphEditor fragment1 = new TelegraphEditor(getParentActivity(),list, item.title,fname.endsWith(".pub"));
                            fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
@@ -406,7 +406,8 @@ public class TelegraphSelectActivity extends BaseFragment {
 
                                }
                            });
-                           presentFragment(fragment1);
+                           presentFragment(fragment1);*/
+                        delegate.startTelegraphEditActivity();
                        }catch (Exception d){
                            Log.d("BBB",d.toString()+"");
                        }
@@ -528,7 +529,7 @@ public class TelegraphSelectActivity extends BaseFragment {
         if (history.size() > 0) {
 
             //layoutManager.scrollToPositionWithOffset(he.scrollItem, he.scrollOffset);
-            return false;
+
         }
         return super.onBackPressed();
     }
