@@ -126,49 +126,52 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
         titlet = title;
 
     }
+
     Editable b = new Editable.Factory().newEditable("");
     boolean edit;
     public TelegraphEditor(Activity s, Page bod, String title,boolean edit){
         super();
         this.edit = edit;
         //build editable
-        List<Node> body = bod.getContent();
-        for(int x = 0; x < body.size(); x++){
-            Node n = body.get(x);
-            if(n instanceof NodeText){
-               NodeText t = (NodeText) n;
-               b.append(t.getContent());
-            }else {
-                  NodeElement m = (NodeElement) n;
-                  Log.d("DD",m+"");
-                  if(m.getTag().equals("blockquote")) {
-                      List<Node> l = m.getChildren();
-                      for(Node c: l){
-                          if(c instanceof NodeText){
-                              b.append(((NodeText) c).getContent());
-                          }else {
-                              NodeElement e = ((NodeElement)c);
-                              List<Node> list = (List<Node>) e.getChildren();
-                              if(list!=null) {
-                                  NodeText t = (NodeText) list.get(0);
-                                  b.append(t.getContent());
-                                  setSpan(e,t.getContent().length() );
-                              }else setSpan(e,-1);
-                          }
-                      }
-                  }else{
-                      List<Node> list = (List<Node>) m.getChildren();
-                      if(list!=null) {
-                          NodeText t = (NodeText) list.get(0);
-                          b.append(t.getContent());
-                          setSpan(m,t.getContent().length());
-                      }else setSpan(m,-1);
-                  }
+        if(bod!=null) {
+            List<Node> body = bod.getContent();
+            for (int x = 0; x < body.size(); x++) {
+                Node n = body.get(x);
+                if (n instanceof NodeText) {
+                    NodeText t = (NodeText) n;
+                    b.append(t.getContent());
+                } else {
+                    NodeElement m = (NodeElement) n;
+                    Log.d("DD", m + "");
+                    if (m.getTag().equals("blockquote")) {
+                        List<Node> l = m.getChildren();
+                        for (Node c : l) {
+                            if (c instanceof NodeText) {
+                                b.append(((NodeText) c).getContent());
+                            } else {
+                                NodeElement e = ((NodeElement) c);
+                                List<Node> list = (List<Node>) e.getChildren();
+                                if (list != null) {
+                                    NodeText t = (NodeText) list.get(0);
+                                    b.append(t.getContent());
+                                    setSpan(e, t.getContent().length());
+                                } else setSpan(e, -1);
+                            }
+                        }
+                    } else {
+                        List<Node> list = (List<Node>) m.getChildren();
+                        if (list != null) {
+                            NodeText t = (NodeText) list.get(0);
+                            b.append(t.getContent());
+                            setSpan(m, t.getContent().length());
+                        } else setSpan(m, -1);
+                    }
+                }
             }
-        }
 
-        l = s;
-        titlet = title;
+            l = s;
+            titlet = title;
+        }
     }
 
 
@@ -829,8 +832,6 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
         //builder.setTitle("Input Anchor");
         LinearLayout l = new LinearLayout(getParentActivity());
         l.setOrientation(LinearLayout.VERTICAL);
-
-
         alt.setInputType(InputType.TYPE_CLASS_TEXT);
         alt.setHint(ApplicationLoader.applicationContext.getString(R.string.author)); //autocomplete
 

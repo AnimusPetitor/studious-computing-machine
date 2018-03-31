@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class TelegraphSelectActivity extends BaseFragment {
@@ -100,7 +101,11 @@ public class TelegraphSelectActivity extends BaseFragment {
 
     public interface TelegraphSelectActivityDelegate {
         void didSelectFiles(TelegraphSelectActivity activity, ArrayList<String> files);
-        void startTelegraphEditActivity();
+        void startTelegraphEditActivity(ListItem item);
+    }
+    int flag;
+    public TelegraphSelectActivity(int fl){
+        flag = fl;
     }
 
     private RecyclerListView listView;
@@ -125,7 +130,7 @@ public class TelegraphSelectActivity extends BaseFragment {
     public String fileFilter = "*";
     public String[] arrayFilter;
 
-    private class ListItem {
+    public class ListItem {
         int icon;
         String title;
         String subtitle = "";
@@ -234,7 +239,11 @@ public class TelegraphSelectActivity extends BaseFragment {
                 } else if (id == done) {
                     if (delegate != null) {
                         ArrayList<String> files = new ArrayList<>();
-                        files.addAll(selectedFiles.keySet());
+                        Set<String> m = selectedFiles.keySet();
+                        for(String l: m){
+                            boolean dr = selectedFiles.get(l).ext.equals("pub");
+                            if(dr)files.add(selectedFiles.get(l).subtitle);
+                        }
                         delegate.didSelectFiles(TelegraphSelectActivity.this, files);
                         for (ListItem item : selectedFiles.values()) {
                             item.date = System.currentTimeMillis();
@@ -258,7 +267,7 @@ public class TelegraphSelectActivity extends BaseFragment {
 
         actionMode.addView(selectedMessagesCountTextView, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1.0f, 65, 0, 0, 0));
 
-        //actionModeViews.add(actionMode.addItemWithWidth(done, R.drawable.ic_ab_done, AndroidUtilities.dp(54)));
+        actionModeViews.add(actionMode.addItemWithWidth(done, R.drawable.ic_ab_done, AndroidUtilities.dp(54)));
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
@@ -338,15 +347,21 @@ public class TelegraphSelectActivity extends BaseFragment {
                 File file = item.file;
                 if (file == null) {
                         if (delegate != null) {
-                            delegate.startTelegraphEditActivity();
+                            if(flag==1) {
+                                ArrayList<String> s = new ArrayList();
+                                s.add(item.subtitle);
+                                delegate.didSelectFiles(TelegraphSelectActivity.this, s);
+                            }
+                            else delegate.startTelegraphEditActivity(item);
                         }
                 } else if (file.isDirectory()) {
                     Log.d("D",(item==null) + "");
                     if (item.icon == R.drawable.ic_create_black_24dp) {
                         if (delegate != null) {
 
-                            actionBar.setTitle(item.title);
-                           delegate.startTelegraphEditActivity();
+                                actionBar.setTitle(item.title);
+                                delegate.startTelegraphEditActivity(item);
+
                         }
                         finishFragment(false);
                         return;
@@ -372,7 +387,7 @@ public class TelegraphSelectActivity extends BaseFragment {
                        try {
                            //backgroun
                            //String fname = item.file.getName();
-                           /*FileInputStream fi = new FileInputStream(item.thumb);
+                          /* FileInputStream fi = new FileInputStream(item.thumb);
                            ObjectInputStream oo = new ObjectInputStream(fi );
                            final Page list = (Page) oo.readObject();
                            String fname = item.file.getName();
@@ -407,9 +422,13 @@ public class TelegraphSelectActivity extends BaseFragment {
                                }
                            });
                            presentFragment(fragment1);*/
-                        delegate.startTelegraphEditActivity();
+                        if(flag==1)delegate.startTelegraphEditActivity(item);else{
+                            ArrayList<String> s = new ArrayList();
+                            s.add(item.subtitle);
+                            delegate.didSelectFiles(TelegraphSelectActivity.this, s);
+                        }
                        }catch (Exception d){
-                           Log.d("BBB",d.toString()+"");
+                        
                        }
                     }
                 }

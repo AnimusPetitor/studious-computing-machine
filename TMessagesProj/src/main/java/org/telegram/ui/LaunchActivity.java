@@ -113,10 +113,13 @@ import org.telegram.ui.Components.ThemeEditorView;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -522,25 +525,53 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                         LaunchActivity.this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                         return;
                     }
-                    final TelegraphSelectActivity fragment = new TelegraphSelectActivity();
+                    final TelegraphSelectActivity fragment = new TelegraphSelectActivity(1);
                     fragment.setDelegate(new TelegraphSelectActivity.TelegraphSelectActivityDelegate() {
                         @Override
                         public void didSelectFiles(TelegraphSelectActivity activity, ArrayList<String> files) {
                             //activity.finishFragment();
                             //SendMessagesHelper.prepareSendingDocuments(files, files, null, null, dialog_id, replyingMessageObject, null);
                             //showReplyPanel(false, null, null, null, false);
-                            //DraftQuery.cleanDraft(dialog_id, true);
+                            //DraftQuery.cleanDraft(dialog_id, tr
+
+                            if(files.get(0)!=null) {
+                            ArticleViewer.getInstance().setParentActivity(LaunchActivity.this, fragment);
+                            ArticleViewer.getInstance().openUrl(files.get(0),true);
+                            }
                         }
                         @Override
-                        public void startTelegraphEditActivity() {
+                        public void startTelegraphEditActivity(TelegraphSelectActivity.ListItem item) {
+                            FileInputStream fi = null;
+                            String fname = null;
+                            Page list = null;
+                            if(item!=null && item.thumb!=null) {
+                                try {
+                                    fi = new FileInputStream(item.thumb);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                                ObjectInputStream oo = null;
+                                try {
+                                    oo = new ObjectInputStream(fi);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    list = (Page) oo.readObject();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                              fname = item.file.getName();
+                            }
+                            final TelegraphEditor fragment1 = new TelegraphEditor(LaunchActivity.this,list, item.title,fname.endsWith(".pub"));
 
-                            TelegraphEditor fragment1 = new TelegraphEditor(LaunchActivity.this);
                             fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
                                 @Override
                                 public void commitCurrentToRecents(TelegraphEditor activity, String title, List<Node> body, boolean draft)  {
                                      if(!draft && title.length() > 0){
                                          //TRequest.shave(body,title);
-
 
                                      }else {
                                          //and then save

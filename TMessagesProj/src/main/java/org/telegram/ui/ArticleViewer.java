@@ -2697,6 +2697,158 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
         return open(messageObject, true);
     }
 
+    public boolean openUrl(final String messageObject, boolean first) {
+        if (parentActivity == null || isVisible && !collapsed || messageObject == null) {
+            return false;
+        }
+        final TLRPC.MessageMedia w = new TLRPC.MessageMedia();
+        if (first) {
+            TLRPC.TL_messages_getWebPage req = new TLRPC.TL_messages_getWebPage();
+            req.url = messageObject;
+            req.hash = 0;
+
+            ConnectionsManager.getInstance().sendRequest(req, new RequestDelegate() {
+                @Override
+                public void run(TLObject response, TLRPC.TL_error error) {
+                    if (response instanceof TLRPC.TL_webPage) {
+                        final TLRPC.TL_webPage webPage = (TLRPC.TL_webPage) response;
+                        if (webPage.cached_page == null) {
+                            return;
+                        }
+                        AndroidUtilities.runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!pagesStack.isEmpty() && webPage.cached_page != null) {
+                                    w.webpage = webPage;
+                                    pagesStack.set(0, webPage);
+                                    if (pagesStack.size() == 1) {
+                                        currentPage = webPage;
+                                        ApplicationLoader.applicationContext.getSharedPreferences("articles", Activity.MODE_PRIVATE).edit().remove("article" + currentPage.id).commit();
+                                        updateInterfaceForCurrentPage(false);
+                                    }
+                                }
+                            }
+                        });
+                        HashMap<Long, TLRPC.WebPage> webpages = new HashMap<>();
+                        webpages.put(webPage.id, webPage);
+                        MessagesStorage.getInstance().putWebPages(webpages);
+                    }
+                }
+            });
+        }
+
+        pagesStack.clear();
+        collapsed = false;
+        backDrawable.setRotation(0, false);
+        containerView.setTranslationX(0);
+        containerView.setTranslationY(0);
+        listView.setTranslationY(0);
+        listView.setAlpha(1.0f);
+        windowView.setInnerTranslationX(0);
+
+        actionBar.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        captionTextViewNew.setVisibility(View.GONE);
+        captionTextViewOld.setVisibility(View.GONE);
+        shareContainer.setAlpha(0.0f);
+        backButton.setAlpha(0.0f);
+        settingsButton.setAlpha(0.0f);
+        layoutManager.scrollToPositionWithOffset(0, 0);
+        checkScroll(-AndroidUtilities.dp(56));
+
+        TLRPC.WebPage webPage = w.webpage;
+        String webPageUrl = webPage.url.toLowerCase();
+        int index;
+        String anchor = null;
+
+        addPageToStack(webPage, anchor);
+
+        lastInsets = null;
+        if (!isVisible) {
+            WindowManager wm = (WindowManager) parentActivity.getSystemService(Context.WINDOW_SERVICE);
+            if (attachedToWindow) {
+                try {
+                    wm.removeView(windowView);
+                } catch (Exception e) {
+                    //ignore
+                }
+            }
+            try {
+                if (Build.VERSION.SDK_INT >= 21) {
+                    windowLayoutParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                            WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
+                            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
+                }
+                windowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                windowView.setFocusable(false);
+                containerView.setFocusable(false);
+                wm.addView(windowView, windowLayoutParams);
+            } catch (Exception e) {
+                FileLog.e(e);
+                return false;
+            }
+        } else {
+            windowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            WindowManager wm = (WindowManager) parentActivity.getSystemService(Context.WINDOW_SERVICE);
+            wm.updateViewLayout(windowView, windowLayoutParams);
+        }
+        isVisible = true;
+        animationInProgress = 1;
+        windowView.setAlpha(0);
+        containerView.setAlpha(0);
+
+        final AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(
+                ObjectAnimator.ofFloat(windowView, "alpha", 0, 1.0f),
+                ObjectAnimator.ofFloat(containerView, "alpha", 0.0f, 1.0f),
+                ObjectAnimator.ofFloat(windowView, "translationX", AndroidUtilities.dp(56), 0)
+        );
+
+        animationEndRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (containerView == null || windowView == null) {
+                    return;
+                }
+                if (Build.VERSION.SDK_INT >= 18) {
+                    containerView.setLayerType(View.LAYER_TYPE_NONE, null);
+                }
+                animationInProgress = 0;
+            }
+        };
+
+        animatorSet.setDuration(150);
+        animatorSet.setInterpolator(interpolator);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                AndroidUtilities.runOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        NotificationCenter.getInstance().setAnimationInProgress(false);
+                        if (animationEndRunnable != null) {
+                            animationEndRunnable.run();
+                            animationEndRunnable = null;
+                        }
+                    }
+                });
+            }
+        });
+        transitionAnimationStartTime = System.currentTimeMillis();
+        AndroidUtilities.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                NotificationCenter.getInstance().setAllowedNotificationsDutingAnimation(new int[]{NotificationCenter.dialogsNeedReload, NotificationCenter.closeChats, NotificationCenter.mediaCountDidLoaded, NotificationCenter.mediaDidLoaded, NotificationCenter.dialogPhotosLoaded});
+                NotificationCenter.getInstance().setAnimationInProgress(true);
+                animatorSet.start();
+            }
+        });
+        if (Build.VERSION.SDK_INT >= 18) {
+            containerView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        showActionBar(200);
+        return true;
+    }
     private boolean open(final MessageObject messageObject, boolean first) {
         if (parentActivity == null || isVisible && !collapsed || messageObject == null) {
             return false;

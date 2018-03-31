@@ -191,8 +191,11 @@ import org.telegram.ui.Components.voip.VoIPHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
@@ -4572,19 +4575,47 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
             }
-            final TelegraphSelectActivity fragment = new TelegraphSelectActivity();
+            final TelegraphSelectActivity fragment = new TelegraphSelectActivity(0);
             fragment.setDelegate(new TelegraphSelectActivity.TelegraphSelectActivityDelegate() {
                 @Override
                 public void didSelectFiles(TelegraphSelectActivity activity, final ArrayList<String> files) {
-                    //activity.finishFragment();
+                    activity.finishFragment();
+                    for(String f: files){
+                       processSendingText(f);
+                    }
+                    moveScrollToLastMessage();
                     //SendMessagesHelper.prepareSendingDocuments(files, files, null, null, dialog_id, replyingMessageObject, null);
                     //showReplyPanel(false, null, null, null, false);
                     //DraftQuery.cleanDraft(dialog_id, true);
                 }
                 @Override
-                public void startTelegraphEditActivity() {
+                public void startTelegraphEditActivity(TelegraphSelectActivity.ListItem item) {
+                    FileInputStream fi = null;
+                    String fname = null;
+                    Page list = null;
+                    if(item!=null && item.thumb!=null) {
+                        try {
+                            fi = new FileInputStream(item.thumb);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        ObjectInputStream oo = null;
+                        try {
+                            oo = new ObjectInputStream(fi);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                    TelegraphEditor fragment1 = new TelegraphEditor(ChatActivity.this);
+                        try {
+                            list = (Page) oo.readObject();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        fname = item.file.getName();
+                    }
+                    final TelegraphEditor fragment1 = new TelegraphEditor(getParentActivity(),list, item.title,fname.endsWith(".pub"));
                     fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
                         @Override
                         public void commitCurrentToRecents(TelegraphEditor activity, String title, final List<Node> body, boolean draft)  {
@@ -4736,9 +4767,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 @Override
                 public void didSelectFiles(DocumentSelectActivity activity, ArrayList<String> files) {
                     activity.finishFragment();
-                    SendMessagesHelper.prepareSendingDocuments(files, files, null, null, dialog_id, replyingMessageObject, null);
-                    showReplyPanel(false, null, null, null, false);
-                    DraftQuery.cleanDraft(dialog_id, true);
+                    //SendMessagesHelper.prepareSendingDocuments(files, files, null, null, dialog_id, replyingMessageObject, null);
+                    //showReplyPanel(false, null, null, null, false);
+                    //DraftQuery.cleanDraft(dialog_id, true);
                 }
 
                 @Override
