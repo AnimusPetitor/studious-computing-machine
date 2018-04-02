@@ -465,14 +465,13 @@ public class TelegraphEditText extends LinearLayout implements View.OnKeyListene
                 String newlit [] = ff.split("\n");
                 int l = 0;
                 for(int i = 0; i < newlit.length; i++){
-                    list.add(NodeElement.newInstance(l+newlit[i].length(),"br",null));
+                   if(i!=0) list.add(NodeElement.newInstance(l+newlit[i].length(),"br",null));
                     String spalit [] = newlit[i].split(" ");
                     for(int m =0; m < spalit.length; m++){
-                        NodeText tx = new NodeText(spalit[m]+" ");
-                        l +=  spalit[m].length() -1;
-                        tx.start = l ;
+                        NodeText tx = new NodeText(spalit[m] + " ");
+                        l +=  spalit[m].length() + 1;
+                        tx.start = l;
                         list.add(tx);
-
                     }
                 }
 
@@ -560,35 +559,27 @@ public class TelegraphEditText extends LinearLayout implements View.OnKeyListene
             }
         });
 
-        ArrayList<Node> temp = new ArrayList();
+        ArrayList<Node> temp = new ArrayList<Node>();
         NodeElement tn = null;
         for(int l = 0; l < list.size(); l++){
-            Log.d("NODE",list.get(l).toString()+","+l);
-            /*Node c = list.get(l);
-            if(end < c.end && c instanceof NodeElement){
-                i = l;
-                end = c.end;
-            }
-
-            if(c.start < end){
-                NodeElement p = (NodeElement) list.get(i);
-                rm.add(p);
-                p.getChildren().add(c);
-            }*/
+            Log.d("NODE",list.get(l).toString()+","+list.get(l).start);
             Node c = list.get(l);
             if(c instanceof NodeElement){
                 NodeElement el = (NodeElement) c;
+                
                 if(el.getTag().startsWith("/")){
                     if(tn!=null && tn.getChildren().size()>0)temp.add(tn);
                      tn = null;
-                }else if(!el.getTag().equals("br") && !el.getTag().equals("hr")){
-                    tn = el;
+                }else if(!el.getTag().equals("br") && !el.getTag().equals("hr")) {
+                   tn = el;
                     if(tn.getChildren()==null){
                        tn.setChildren(new ArrayList<Node>());
                     }
                     if(el.getTag().equals("blockquote"))temp.add(NodeElement.newInstance(el.start-1,"br",null));
 
-                }else temp.add(c);
+                }else {
+                     temp.add(c);
+                }
             }else  {
                 if(tn!=null){
                     if(tn.getChildren()==null){
@@ -596,14 +587,12 @@ public class TelegraphEditText extends LinearLayout implements View.OnKeyListene
                     }
                     tn.getChildren().add(c);
                 }
-                else temp.add(c);
+                else{  temp.add(c);}
             }
-
         }
 
         for(int l = 0; l < temp.size(); l++){
             Log.d("NODE1",temp.get(l).toString()+"");
-
         }
 
 

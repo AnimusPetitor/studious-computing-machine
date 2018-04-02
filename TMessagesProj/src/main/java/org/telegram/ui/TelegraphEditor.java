@@ -168,7 +168,6 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
                     }
                 }
             }
-
             l = s;
             titlet = title;
         }
@@ -182,7 +181,7 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
             n.start = b.length() - l; n.end = n.start + l;
             Log.d("DD",tag+""+n.start+","+n.end);
             switch (tag) {
-                case "strong":
+                case "b":
                     b.setSpan(new ru.noties.markwon.spans.StrongEmphasisSpan(), n.start, n.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     break;
                 case "a":
@@ -269,8 +268,6 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
         //loadRecentFiles();
         return super.onFragmentCreate();
     }
-
-
     LinearLayout vh;
     LinearLayout xl;
     ImageView btn;
@@ -279,12 +276,8 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
     EditText title;
     public int titlen;
     ActionBarMenu actionMode;
-
-
-
     @Override
     public void onFragmentDestroy() {
-
         super.onFragmentDestroy();
     }
     boolean editorAct = false;
@@ -297,7 +290,6 @@ public class TelegraphEditor extends BaseFragment  implements TelegraphEditText.
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-
                 if (id == -1) {
                     if (actionBar.isActionModeShowed()) {
                         actionBar.hideActionMode();

@@ -205,7 +205,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver 
+        <receiver
             android:name="org.telegram.messenger.AutoMessageReplyReceiver"
             android:exported="false">
             <intent-filter>

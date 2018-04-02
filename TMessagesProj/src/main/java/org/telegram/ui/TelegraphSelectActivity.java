@@ -383,52 +383,14 @@ public class TelegraphSelectActivity extends BaseFragment {
                         }
                     } else {
                        try {
-                           //backgroun
-                           //String fname = item.file.getName();
-                          /* FileInputStream fi = new FileInputStream(item.thumb);
-                           ObjectInputStream oo = new ObjectInputStream(fi );
-                           final Page list = (Page) oo.readObject();
-                           String fname = item.file.getName();
-
-                           final TelegraphEditor fragment1 = new TelegraphEditor(getParentActivity(),list, item.title,fname.endsWith(".pub"));
-                           fragment1.setDelegate(new TelegraphEditor.TelegraphEditorDelegate() {
-                               @Override
-                               public void commitCurrentToRecents(TelegraphEditor activity, String title,final List<Node> body, boolean draft) {
-                                   if (!draft) {//...
-
-                                   }else {
-                                       if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                           getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
-                                           //s//electedObject = null;
-                                           return;
-                                       }
-                                       try {
-                                           //(body.length() > 100 ? body.subSequence(0, 100) : body)
-                                           FileOutputStream fi = new FileOutputStream(Environment.getExternalStorageDirectory() + "Telegram/Telegraph/" + title + ".-_-." + "" + ".tgp");
-                                           ObjectOutputStream oo = new ObjectOutputStream(fi);
-                                           oo.writeObject(body);
-                                           //AndroidUtilities.copyFile(new ByteArrayInputStream(body.toString().getBytes()), new File();
-
-                                       } catch (IOException s) {
-
-                                       }
-                                   }
-                                   //Notify state
-                                   activity.finishFragment();
-                                   addToList();
-
-                               }
-                           });
-                           presentFragment(fragment1);*/
-                          if(!item.subtitle.startsWith("http")) return;
-                        if(flag!=0)delegate.startTelegraphEditActivity(item);
-                        else {
-                            ArrayList<String> s = new ArrayList();
-                            s.add(item.subtitle);
-                            delegate.didSelectFiles(TelegraphSelectActivity.this, s);
-                        }
+                            if(flag!=0 || !item.subtitle.startsWith("http"))delegate.startTelegraphEditActivity(item);
+                            else {
+                                ArrayList<String> s = new ArrayList();
+                                s.add(item.subtitle);
+                                delegate.didSelectFiles(TelegraphSelectActivity.this, s);
+                            }
                        }catch (Exception d){
-                        
+
                        }
                     }
                 }
